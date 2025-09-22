@@ -1,5 +1,8 @@
 import { type ClassValue, clsx } from 'clsx';
-import { twMerge } from 'tailwindcss-merge';
+import { twMerge } from 'tailwind-merge';
+import { MAX_MESSAGE_LENGTH } from './constants';
+
+export { MAX_MESSAGE_LENGTH };
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useMiniKit } from '@coinbase/minikit';
-import { useAuthenticate } from '@coinbase/onchainkit/minikit';
+import { useMiniKit, useAuthenticate } from '@coinbase/onchainkit/minikit';
 import { Contact, Message, Conversation } from '@/lib/types';
 import { generateMessageId } from '@/lib/utils';
 import { APP_CONFIG } from '@/lib/constants';
@@ -15,8 +14,12 @@ type View = 'contacts' | 'chat';
 
 export default function ConvoKitApp() {
   const { context } = useMiniKit();
-  const { user } = useAuthenticate();
-  
+  const authenticate = useAuthenticate();
+
+  // Authentication state
+  const [user, setUser] = useState<any>(null);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+
   // App state
   const [currentView, setCurrentView] = useState<View>('contacts');
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
@@ -24,8 +27,31 @@ export default function ConvoKitApp() {
   const [conversations, setConversations] = useState<Record<string, Conversation>>({});
   const [isAddContactModalOpen, setIsAddContactModalOpen] = useState(false);
 
-  // Mock current user ID (in real app, this would come from authentication)
-  const currentUserId = user?.address || context?.user?.fid?.toString() || 'user_1';
+  // Get current user ID from authentication or context
+  const currentUserId = user?.fid?.toString() || context?.user?.fid?.toString() || 'user_1';
+
+  // Authentication logic
+  const handleAuthenticate = async () => {
+    setIsAuthenticating(true);
+    try {
+      const result = await authenticate();
+      if (result) {
+        setUser(result);
+      }
+    } catch (error) {
+      console.error('Authentication failed:', error);
+    } finally {
+      setIsAuthenticating(false);
+    }
+  };
+
+  // Auto-authenticate on mount if context is available
+  useEffect(() => {
+    if (context?.user && !user) {
+      // If we have context but no authenticated user, try to authenticate
+      handleAuthenticate();
+    }
+  }, [context, user]);
 
   // Initialize with mock data for demo
   useEffect(() => {
@@ -218,6 +244,34 @@ export default function ConvoKitApp() {
   const currentMessages = selectedContact 
     ? conversations[selectedContact.id]?.messages || []
     : [];
+
+  // Show authentication screen if not authenticated
+  if (!user && !isAuthenticating) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-800 to-blue-900 flex items-center justify-center p-4">
+        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 max-w-md w-full text-center">
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold text-white mb-2">{APP_CONFIG.name}</h1>
+            <p className="text-white/80 text-sm">{APP_CONFIG.tagline}</p>
+          </div>
+
+          <div className="space-y-4">
+            <button
+              onClick={handleAuthenticate}
+              disabled={isAuthenticating}
+              className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-blue-400 text-white font-medium py-3 px-6 rounded-xl transition-colors duration-200"
+            >
+              {isAuthenticating ? 'Authenticating...' : 'Sign In with Farcaster'}
+            </button>
+
+            <p className="text-white/60 text-xs">
+              Connect your Farcaster account to start messaging
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-800 to-blue-900 flex flex-col">

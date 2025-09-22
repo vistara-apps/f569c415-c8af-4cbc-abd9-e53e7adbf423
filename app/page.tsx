@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useMiniKit } from '@coinbase/minikit';
-import { useAuthenticate } from '@coinbase/onchainkit/minikit';
 import { Contact, Message, Conversation } from '@/lib/types';
 import { generateMessageId } from '@/lib/utils';
 import { APP_CONFIG } from '@/lib/constants';
@@ -14,8 +12,11 @@ import { AddContactModal } from '@/components/features/AddContactModal';
 type View = 'contacts' | 'chat';
 
 export default function ConvoKitApp() {
-  const { context } = useMiniKit();
-  const { user } = useAuthenticate();
+  // Mock user context for demo purposes
+  const mockUser = {
+    address: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
+    fid: 12345
+  };
   
   // App state
   const [currentView, setCurrentView] = useState<View>('contacts');
@@ -25,7 +26,7 @@ export default function ConvoKitApp() {
   const [isAddContactModalOpen, setIsAddContactModalOpen] = useState(false);
 
   // Mock current user ID (in real app, this would come from authentication)
-  const currentUserId = user?.address || context?.user?.fid?.toString() || 'user_1';
+  const currentUserId = mockUser.address;
 
   // Initialize with mock data for demo
   useEffect(() => {

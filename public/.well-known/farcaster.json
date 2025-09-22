@@ -1,0 +1,30 @@
+{
+  "accountAssociation": {
+    "header": "",
+    "payload": "",
+    "signature": ""
+  },
+  "frame": {
+    "version": "1",
+    "name": "ConvoKit",
+    "subtitle": "Built with Zara",
+    "description": "ConvoKit is a Base Mini App built with Zara.",
+    "iconUrl": "https://0co.to/images/zara-2.png",
+    "homeUrl": "https://f569c415c8af4cbcabd9e53e7adbf423-nt5l.vercel.app",
+    "splashImageUrl": "https://f569c415c8af4cbcabd9e53e7adbf423-nt5l.vercel.app/splash.png",
+    "splashBackgroundColor": "#000000",
+    "heroImageUrl": "https://f569c415c8af4cbcabd9e53e7adbf423-nt5l.vercel.app/image.png",
+    "tagline": "ConvoKit",
+    "screenshotUrls": [
+      "https://f569c415c8af4cbcabd9e53e7adbf423-nt5l.vercel.app/screenshot.png",
+      "https://f569c415c8af4cbcabd9e53e7adbf423-nt5l.vercel.app/screenshot.png"
+    ],
+    "primaryCategory": "social",
+    "tags": [
+      "base",
+      "miniapp",
+      "onchainkit"
+    ],
+    "webhookUrl": "https://f569c415c8af4cbcabd9e53e7adbf423-nt5l.vercel.app/api/webhook"
+  }
+}
